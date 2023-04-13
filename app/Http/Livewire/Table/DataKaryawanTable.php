@@ -11,7 +11,7 @@ use Yudican\LaravelCrudGenerator\Livewire\Table\LivewireDatatable;
 class DataKaryawanTable extends LivewireDatatable
 {
     protected $listeners = ['refreshTable'];
-    public $hideable = 'select';
+    // public $hideable = 'select';
     public $table_name = 'tbl_data_karyawan';
 
     public function builder()

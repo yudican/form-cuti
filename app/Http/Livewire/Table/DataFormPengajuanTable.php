@@ -14,7 +14,7 @@ use PhpOffice\PhpWord\Settings;
 class DataFormPengajuanTable extends LivewireDatatable
 {
     protected $listeners = ['refreshTable'];
-    public $hideable = 'select';
+    // public $hideable = 'select';
     public $table_name = 'tbl_data_form_pengajuan';
 
 
@@ -51,7 +51,7 @@ class DataFormPengajuanTable extends LivewireDatatable
                         'route' => 'showDetail(' . $id . ')',
                         'label' => 'Detail',
                     ];
-                    if (in_array(auth()->user()->role->role_type, ['admin', 'superadmin'])) {
+                    if (in_array(auth()->user()->role->role_type, ['admin', 'superadmin', 'member'])) {
                         $action[] = [
                             'type' => 'button',
                             'route' => 'updateStatus(' . $id . ',"diusulkan")',
@@ -80,6 +80,12 @@ class DataFormPengajuanTable extends LivewireDatatable
                         'label' => 'Download',
                     ];
                 }
+
+                $action[] = [
+                    'type' => 'button',
+                    'route' => 'getId(' . $id . ')',
+                    'label' => 'Hapus',
+                ];
 
 
 

@@ -50,7 +50,7 @@ class DataKaryawanController extends Component
                 'name'  => $this->name,
                 'username'  => $this->username,
                 'email'  => $this->username . '@gmail.com',
-                'password'  => Hash::make('NRP' . $this->username),
+                'password'  => Hash::make('pass' . $this->username),
 
             ];
 
@@ -88,7 +88,7 @@ class DataKaryawanController extends Component
                 'name'  => $this->name,
                 'username'  => $this->username,
                 'email'  => $this->username . '@gmail.com',
-                'password'  => 'NRP' . $this->username,
+                'password'  => Hash::make('pass' . $this->username),
 
             ];
 
@@ -114,10 +114,22 @@ class DataKaryawanController extends Component
 
     public function delete()
     {
-        DataKaryawan::find($this->data_karyawan_id)->delete();
+        try {
+            DB::beginTransaction();
 
-        $this->_reset();
-        return $this->emit('showAlert', ['msg' => 'Data Berhasil Dihapus']);
+            $karyawan = DataKaryawan::find($this->data_karyawan_id);
+            $user = User::find($karyawan->user_id);
+            $user->roles()->detach();
+            $user->delete();
+
+            DB::commit();
+            $this->_reset();
+            return $this->emit('showAlert', ['msg' => 'Data Berhasil Dihapus']);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            $this->_reset();
+            return $this->emit('showAlertError', ['msg' => 'Data Gagal Dihapus']);
+        }
     }
 
     public function _validate()
