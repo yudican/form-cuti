@@ -245,7 +245,7 @@ class DataFormPengajuanController extends Component
         $latestSijNumber = DB::table('data_form_pengajuan')->whereNotNull('nomor_sij')->where('nomor_sij', 'like', 'SIJ/%')->orderBy('id', 'desc')->first();
 
         $currentYear = date('Y');
-        $currentMonth = strtoupper(date('M'));
+        $currentMonth = date('m');
 
         if (!$latestSijNumber) {
             $nextNumber = '001';
