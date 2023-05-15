@@ -135,7 +135,9 @@
                             </li>
                             @if ($status == 'diusulkan')
                             @if (in_array(auth()->user()->role->role_type,['admin','superadmin']))
-                            <x-text-field type="text" name="keterangan" label="Keterangan" />
+                            <li class="list-group-item">
+                                <x-text-field type="text" name="keterangan" label="Keterangan" />
+                            </li>
                             @endif
                             @endif
                         </ul>

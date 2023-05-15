@@ -282,9 +282,13 @@ class DataFormPengajuanController extends Component
         }
 
         if ($status === 'disetujui') {
+            $this->validate([
+                'keterangan' => 'required'
+            ]);
+
             $data = [
                 'status' => $status,
-
+                'keterangan' => $this->keterangan,
                 'tanggal_disetujui' => date('Y-m-d')
             ];
         }
