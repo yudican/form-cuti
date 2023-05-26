@@ -125,6 +125,7 @@ class DataFormPengajuanTable extends LivewireDatatable
         // Load the Word template
         $template = new TemplateProcessor(public_path('assets/sij.docx'));
         // Replace variables in the template with the values passed in
+
         $template->setValue('sij_nomor', $form->nomor_sij);
         $template->setValue('nama', $form->user_name);
         $template->setValue('pangkat', $form->pangkat);
@@ -134,9 +135,11 @@ class DataFormPengajuanTable extends LivewireDatatable
         $template->setValue('tgl_berangkat', date('d M Y', strtotime($form->tanggal_berangkat)));
         $template->setValue('tgl_kembali', date('d M Y', strtotime($form->tanggal_kembali)));
         $template->setValue('tgl_disetujui', date('d M Y', strtotime($form->tanggal_disetujui)));
-        $template->setValue('keterangan', $form->keterangan ?? '-');
         $template->setValue('pengikut', $form->pengikut ?? '-');
         $template->setValue('transportasi', $form->transportasi ?? '-');
+
+        $tanggal = date('l, d M Y', strtotime($form->tanggal_kembali));
+        $template->setValue('keterangan', "- Tiba ditempat segera laporan TNI Setempat\n - {$tanggal} Sudah apel api di Koarmada III");
 
         // Save the modified template to a temporary file
         $tempFile = tempnam(sys_get_temp_dir(), 'word_template');
