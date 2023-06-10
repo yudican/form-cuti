@@ -10,6 +10,7 @@ use Yudican\LaravelCrudGenerator\Livewire\Table\LivewireDatatable;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\TemplateProcessor;
 use PhpOffice\PhpWord\Settings;
+use Dompdf\Dompdf;
 
 class DataFormPengajuanTable extends LivewireDatatable
 {
