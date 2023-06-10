@@ -153,7 +153,7 @@ class DataFormPengajuanTable extends LivewireDatatable
         // $pdfWriter->save($pdfFile);
 
         // Send the PDF file to the browser for download
-        return response()->download($tempFile, strtolower(str_replace(' ', '-', $form->user_name)) . '.docx')->deleteFileAfterSend(true);
+        return response()->download($tempFile, strtolower(str_replace(' ', '-', $form->user_name)) . '.pdf')->deleteFileAfterSend(true);
     }
 
     public function updateStatus($id, $status)
