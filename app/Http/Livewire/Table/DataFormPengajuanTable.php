@@ -146,19 +146,19 @@ class DataFormPengajuanTable extends LivewireDatatable
         $tempFile = tempnam(sys_get_temp_dir(), 'word_template');
         $template->saveAs($tempFile);
 
-        Settings::setPdfRendererName(Settings::PDF_RENDERER_DOMPDF);
-        Settings::setPdfRendererPath(base_path('vendor/dompdf/dompdf'));
+        // Settings::setPdfRendererName(Settings::PDF_RENDERER_DOMPDF);
+        // Settings::setPdfRendererPath(base_path('vendor/dompdf/dompdf'));
 
         // // Convert the temporary file to PDF
-        $phpWord = IOFactory::load($tempFile);
+        // $phpWord = IOFactory::load($tempFile);
         // $pdfWriter = IOFactory::createWriter($phpWord, 'PDF');
-        $pdfFile = tempnam(sys_get_temp_dir(), 'pdf');
+        // $pdfFile = tempnam(sys_get_temp_dir(), 'pdf');
         // $pdfWriter->save($pdfFile);
 
-        $phpWord->save($pdfFile, 'PDF');
+        // $phpWord->save($pdfFile, 'PDF');
 
         // Send the PDF file to the browser for download
-        return response()->download($pdfFile, 'file.docx')->deleteFileAfterSend(true);
+        return response()->download($tempFile, 'file.docx')->deleteFileAfterSend(true);
     }
 
     public function updateStatus($id, $status)
