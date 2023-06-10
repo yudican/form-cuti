@@ -59,6 +59,12 @@ class DataFormPengajuanController extends Component
     public function store()
     {
         $this->_validate();
+        // check start date and end date
+        $tanggal_berangkat = date('Y-m-d', strtotime($this->tanggal_berangkat));
+        $tanggal_kembali = date('Y-m-d', strtotime($this->tanggal_kembali));
+        if ($tanggal_berangkat > $tanggal_kembali) {
+            return $this->emit('showAlert', ['msg' => 'Tanggal Berangkat tidak boleh lebih besar dari tanggal kembali']);
+        }
         $data = [
             'nomor_sij' => $this->generateSijNumber(),
             'keperluan'  => $this->keperluan,

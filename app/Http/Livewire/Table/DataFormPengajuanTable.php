@@ -23,14 +23,14 @@ class DataFormPengajuanTable extends LivewireDatatable
         if (auth()->user()->role->role_type === 'member') {
             return DataFormPengajuan::query()->where('user_id', auth()->user()->id);
         }
-        return DataFormPengajuan::query();
+        return DataFormPengajuan::query()->where('status', '!=', 'draft');
     }
 
     public function columns()
     {
         return [
             Column::name('id')->label('No.'),
-            Column::name('nomor_sij')->label('SIJ Nomor')->searchable(),
+            // Column::name('nomor_sij')->label('SIJ Nomor')->searchable(),
             Column::name('user.name')->label('Nama')->searchable(),
             Column::name('tanggal_berangkat')->label('Tanggal Berangkat')->searchable(),
             Column::name('tanggal_kembali')->label('Tanggal Kembali')->searchable(),
@@ -81,11 +81,11 @@ class DataFormPengajuanTable extends LivewireDatatable
                     ];
                 }
 
-                $action[] = [
-                    'type' => 'button',
-                    'route' => 'getId(' . $id . ')',
-                    'label' => 'Hapus',
-                ];
+                // $action[] = [
+                //     'type' => 'button',
+                //     'route' => 'getId(' . $id . ')',
+                //     'label' => 'Hapus',
+                // ];
 
 
 
@@ -126,9 +126,9 @@ class DataFormPengajuanTable extends LivewireDatatable
         $template = new TemplateProcessor(public_path('assets/sij.docx'));
         // Replace variables in the template with the values passed in
 
-        $template->setValue('sij_nomor', $form->nomor_sij);
+        $template->setValue('sij_nomor', 'SIJ/   /VI/2023');
         $template->setValue('nama', $form->user_name);
-        $template->setValue('pangkat', $form->pangkat);
+        $template->setValue('pangkat', $form->pangkat . '/' . $form?->user?->username);
         $template->setValue('asal', 'Sorong');
         $template->setValue('tujuan', $form->tujuan);
         $template->setValue('keperluan', $form->keperluan ?? '-');
@@ -138,8 +138,9 @@ class DataFormPengajuanTable extends LivewireDatatable
         $template->setValue('pengikut', $form->pengikut ?? '-');
         $template->setValue('transportasi', $form->transportasi ?? '-');
 
-        $tanggal = date('l, d M Y', strtotime($form->tanggal_kembali));
-        $template->setValue('keterangan', "- Tiba ditempat segera laporan TNI Setempat\n - {$tanggal} Sudah apel api di Koarmada III");
+        // add days 1
+        $tanggal_apel = date('l, d M Y', strtotime($form->tanggal_kembali . ' +1 day'));
+        $template->setValue('keterangan', "- Tiba ditempat segera laporan TNI Setempat\n - {$tanggal_apel} Sudah apel api di Koarmada III");
 
         // Save the modified template to a temporary file
         $tempFile = tempnam(sys_get_temp_dir(), 'word_template');
@@ -152,7 +153,7 @@ class DataFormPengajuanTable extends LivewireDatatable
         // $pdfWriter->save($pdfFile);
 
         // Send the PDF file to the browser for download
-        return response()->download($tempFile, str_replace('/', '-', $form->nomor_sij) . '.docx')->deleteFileAfterSend(true);
+        return response()->download($tempFile, strtolower(str_replace(' ', '-', $form->user_name)) . '.docx')->deleteFileAfterSend(true);
     }
 
     public function updateStatus($id, $status)

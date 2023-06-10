@@ -5,7 +5,7 @@
                 <div class="card-body">
                     <h4 class="card-title text-capitalize">
                         <a href="{{route('dashboard')}}">
-                            <span><i class="fas fa-arrow-left mr-3"></i>tbl data form pengajuan</span>
+                            <span><i class="fas fa-arrow-left mr-3"></i>data form pengajuan</span>
                         </a>
                         <div class="pull-right">
                             @if (in_array(auth()->user()->role->role_type,['member']))
@@ -27,15 +27,18 @@
             <div class="card">
                 <div class="card-body row">
                     <div class="col-md-6">
-                        <x-text-field type="text" name="name" label="Nama" readonly />
-                        <x-text-field type="text" name="username" label="NRP" readonly />
-                        <x-text-field type="text" name="pangkat" label="Pangkat" readonly />
+                        {{--
+                        <x-text-field type="text" name="name" label="Nama" readonly /> --}}
+                        {{--
+                        <x-text-field type="text" name="username" label="NRP" readonly /> --}}
+                        {{--
+                        <x-text-field type="text" name="pangkat" label="Pangkat" readonly /> --}}
                         <x-text-field type="text" name="pengikut" label="Pengikut" />
+                        <x-text-field type="date" name="tanggal_berangkat" label="Tanggal Berangkat" />
                     </div>
                     <div class="col-md-6">
-                        <x-text-field type="date" name="tanggal_berangkat" label="Tanggal Berangkat" />
                         <x-text-field type="date" name="tanggal_kembali" label="Tanggal Kembali" />
-                        <x-text-field type="text" name="tujuan" label="Tujuan" />
+                        <x-text-field type="text" name="tujuan" label="Tempat Tujuan" />
                         <x-text-field type="text" name="transportasi" label="Transportasi" />
                     </div>
 
@@ -127,11 +130,11 @@
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 File Jasmani
-                                <a href={{$file_jasmani}} target="_blank">Download File</a>
+                                <a href={{$file_jasmani}} target="_blank">Lihat File</a>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 File Kesehatan
-                                <a href={{$file_kesehatan}} target="_blank">Download File</a>
+                                <a href={{$file_kesehatan}} target="_blank">Lihat File</a>
                             </li>
                             @if ($status == 'diusulkan')
                             @if (in_array(auth()->user()->role->role_type,['admin','superadmin']))
