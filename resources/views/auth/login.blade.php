@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    {!! RecaptchaV3::field('admin.login') !!}
+                    {!! RecaptchaV3::field('login') !!}
                 </div>
 
                 <div class="form-group form-action-d-flex mb-3">
