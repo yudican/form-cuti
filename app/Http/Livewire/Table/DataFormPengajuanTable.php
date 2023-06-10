@@ -150,7 +150,7 @@ class DataFormPengajuanTable extends LivewireDatatable
         // Convert the temporary file to PDF
         $phpWord = new PhpWord();
         $tempFile = tempnam(sys_get_temp_dir(), 'phpword');
-        $phpWord->save($tempFile, 'PDF');
+        $phpWord->save($tempFile, 'Dompdf');
 
         // Convert the PDF to a downloadable response
         $dompdf = new Dompdf();
