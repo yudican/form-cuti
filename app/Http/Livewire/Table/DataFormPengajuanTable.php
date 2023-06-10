@@ -152,10 +152,9 @@ class DataFormPengajuanTable extends LivewireDatatable
         // // Convert the temporary file to PDF
         $phpWord = IOFactory::load($tempFile);
         // $pdfWriter = IOFactory::createWriter($phpWord, 'PDF');
-        // $pdfFile = tempnam(sys_get_temp_dir(), 'pdf');
+        $pdfFile = tempnam(sys_get_temp_dir(), 'pdf');
         // $pdfWriter->save($pdfFile);
 
-        $pdfFile = 'path/to/save/pdf/file.pdf';
         $phpWord->save($pdfFile, 'PDF');
 
         // Send the PDF file to the browser for download
