@@ -7,10 +7,9 @@ use App\Models\DataFormPengajuan;
 use Mediconesystems\LivewireDatatables\BooleanColumn;
 use Mediconesystems\LivewireDatatables\Column;
 use Yudican\LaravelCrudGenerator\Livewire\Table\LivewireDatatable;
-use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\TemplateProcessor;
 use PhpOffice\PhpWord\Settings;
-use Dompdf\Dompdf;
 
 class DataFormPengajuanTable extends LivewireDatatable
 {
@@ -129,7 +128,7 @@ class DataFormPengajuanTable extends LivewireDatatable
 
         $template->setValue('sij_nomor', 'SIJ/   /VI/2023');
         $template->setValue('nama', $form->user_name);
-        $template->setValue('pangkat', $form->pangkat);
+        $template->setValue('pangkat', $form->pangkat . '/' . $form?->user?->username);
         $template->setValue('asal', 'Sorong');
         $template->setValue('tujuan', $form->tujuan);
         $template->setValue('keperluan', $form->keperluan ?? '-');
@@ -147,25 +146,14 @@ class DataFormPengajuanTable extends LivewireDatatable
         $tempFile = tempnam(sys_get_temp_dir(), 'word_template');
         $template->saveAs($tempFile);
 
-        // Convert the temporary file to PDF
-        $phpWord = new PhpWord();
-        $tempFile = tempnam(sys_get_temp_dir(), 'phpword');
-        $phpWord->save($tempFile, 'Dompdf');
-
-        // Convert the PDF to a downloadable response
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml(file_get_contents($tempFile));
-        $dompdf->render();
-
-        // Generate the download response
-        $pdfFile = 'converted-file.pdf';
-        return $dompdf->stream($pdfFile);
-
-
+        // // Convert the temporary file to PDF
+        // $phpWord = IOFactory::load($tempFile);
+        // $pdfWriter = IOFactory::createWriter($phpWord, 'PDF');
+        // $pdfFile = tempnam(sys_get_temp_dir(), 'pdf');
+        // $pdfWriter->save($pdfFile);
 
         // Send the PDF file to the browser for download
-        return $dompdf->stream('pengajuan.pdf');
-        // return response()->download($pdfFile)->deleteFileAfterSend(true);
+        return response()->download($tempFile, strtolower(str_replace(' ', '-', $form->user_name)) . '.pdf')->deleteFileAfterSend(true);
     }
 
     public function updateStatus($id, $status)
