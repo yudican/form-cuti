@@ -76,8 +76,13 @@ class DataFormPengajuanTable extends LivewireDatatable
                     ];
                     $action[] = [
                         'type' => 'button',
-                        'route' => 'download(' . $id . ')',
-                        'label' => 'Download',
+                        'route' => "download($id,'docx')",
+                        'label' => 'Download Word',
+                    ];
+                    $action[] = [
+                        'type' => 'button',
+                        'route' => "download($id,'pdf')",
+                        'label' => 'Download PDF',
                     ];
                 }
 
@@ -119,7 +124,7 @@ class DataFormPengajuanTable extends LivewireDatatable
         $this->emit('refreshLivewireDatatable');
     }
 
-    public function download($id)
+    public function download($id, $type)
     {
         $form = DataFormPengajuan::find($id);
         // Load the Word template
@@ -146,19 +151,23 @@ class DataFormPengajuanTable extends LivewireDatatable
         $tempFile = tempnam(sys_get_temp_dir(), 'word_template');
         $template->saveAs($tempFile);
 
-        // Settings::setPdfRendererName(Settings::PDF_RENDERER_DOMPDF);
-        // Settings::setPdfRendererPath(base_path('vendor/dompdf/dompdf'));
+        if ($type == 'pdf') {
+            Settings::setPdfRendererName(Settings::PDF_RENDERER_DOMPDF);
+            Settings::setPdfRendererPath(base_path('vendor/dompdf/dompdf'));
 
-        // // Convert the temporary file to PDF
-        // $phpWord = IOFactory::load($tempFile);
-        // $pdfWriter = IOFactory::createWriter($phpWord, 'PDF');
-        // $pdfFile = tempnam(sys_get_temp_dir(), 'pdf');
-        // $pdfWriter->save($pdfFile);
+            // Convert the temporary file to PDF
+            $phpWord = IOFactory::load($tempFile);
+            $pdfWriter = IOFactory::createWriter($phpWord, 'PDF');
+            $pdfFile = tempnam(sys_get_temp_dir(), 'pdf');
+            $pdfWriter->save($pdfFile);
 
-        // $phpWord->save($pdfFile, 'PDF');
+            $phpWord->save($pdfFile, 'PDF');
+
+            return response()->download($tempFile, 'file.' . $type)->deleteFileAfterSend(true);
+        }
 
         // Send the PDF file to the browser for download
-        return response()->download($tempFile, 'file.docx')->deleteFileAfterSend(true);
+        return response()->download($tempFile, 'file.' . $type)->deleteFileAfterSend(true);
     }
 
     public function updateStatus($id, $status)
