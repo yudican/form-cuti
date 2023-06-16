@@ -161,7 +161,7 @@ class DataFormPengajuanTable extends LivewireDatatable
             $pdfFile = tempnam(sys_get_temp_dir(), 'pdf');
             $pdfWriter->save($pdfFile);
 
-            $phpWord->save($pdfFile, 'PDF');
+            // $phpWord->save($pdfFile, 'PDF');
 
             return response()->download($tempFile, 'file.' . $type)->deleteFileAfterSend(true);
         }
