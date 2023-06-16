@@ -7,7 +7,7 @@ use App\Models\DataFormPengajuan;
 use Mediconesystems\LivewireDatatables\BooleanColumn;
 use Mediconesystems\LivewireDatatables\Column;
 use Yudican\LaravelCrudGenerator\Livewire\Table\LivewireDatatable;
-use PhpOffice\PhpWord\IOFactory;
+use PhpOffice\PhpWord;
 use PhpOffice\PhpWord\TemplateProcessor;
 use PhpOffice\PhpWord\Settings;
 
@@ -152,18 +152,17 @@ class DataFormPengajuanTable extends LivewireDatatable
         $template->saveAs($tempFile);
 
         if ($type == 'pdf') {
-            Settings::setPdfRendererName(Settings::PDF_RENDERER_DOMPDF);
-            Settings::setPdfRendererPath(base_path('vendor/dompdf/dompdf'));
+            $phpWord = new PhpWord();
 
-            // Convert the temporary file to PDF
-            $phpWord = IOFactory::load($tempFile);
-            $pdfWriter = IOFactory::createWriter($phpWord, 'PDF');
-            $pdfFile = tempnam(sys_get_temp_dir(), 'pdf');
-            $pdfWriter->save($pdfFile);
+            // Load the Word document
+            $document = $phpWord->loadTemplate($template);
 
-            // $phpWord->save($pdfFile, 'PDF');
+            // Save the document as PDF
+            $pdfPath = public_path('file.pdf');
+            $document->saveAs($pdfPath, 'PDF');
 
-            return response()->download($tempFile, 'file.' . $type)->deleteFileAfterSend(true);
+
+            return response()->download($pdfPath, 'file.' . $type)->deleteFileAfterSend(true);
         }
 
         // Send the PDF file to the browser for download
