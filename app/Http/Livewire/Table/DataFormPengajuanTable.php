@@ -10,7 +10,6 @@ use Yudican\LaravelCrudGenerator\Livewire\Table\LivewireDatatable;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\TemplateProcessor;
 use PhpOffice\PhpWord\Settings;
-use PhpOffice\PhpWord\PhpWord;
 
 class DataFormPengajuanTable extends LivewireDatatable
 {
@@ -153,10 +152,18 @@ class DataFormPengajuanTable extends LivewireDatatable
         $template->saveAs($tempFile);
 
         if ($type == 'pdf') {
-            $pdfPath = storage_path('app/public/generated.pdf');
-            $template->save($pdfPath, 'PDF');
+            Settings::setPdfRendererName(Settings::PDF_RENDERER_DOMPDF);
+            Settings::setPdfRendererPath(base_path('vendor/dompdf/dompdf'));
 
-            return response()->download($pdfPath, 'file.' . $type)->deleteFileAfterSend(true);
+            // Convert the temporary file to PDF
+            $phpWord = IOFactory::load($tempFile);
+            $pdfWriter = IOFactory::createWriter($phpWord, 'PDF');
+            $pdfFile = tempnam(sys_get_temp_dir(), 'pdf');
+            $pdfWriter->save($pdfFile);
+
+            // $phpWord->save($pdfFile, 'PDF');
+
+            return response()->download($pdfFile, 'file.' . $type)->deleteFileAfterSend(true);
         }
 
         // Send the PDF file to the browser for download
