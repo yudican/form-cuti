@@ -156,7 +156,7 @@ class DataFormPengajuanTable extends LivewireDatatable
             $phpWord = new PhpWord();
 
             // Load the Word document
-            $document = $phpWord->load($template);
+            $document = $phpWord->load($tempFile);
 
             // Save the document as PDF
             $pdfPath = public_path('file.pdf');
