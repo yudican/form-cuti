@@ -153,14 +153,8 @@ class DataFormPengajuanTable extends LivewireDatatable
         $template->saveAs($tempFile);
 
         if ($type == 'pdf') {
-            $phpWord = new PhpWord();
-
-            // Load the Word document
-            $document = $phpWord->loadTemplate($tempFile);
-
-            // Save the document as PDF
-            $pdfPath = public_path('file.pdf');
-            $document->save($pdfPath, 'PDF');
+            $pdfPath = storage_path('app/public/generated.pdf');
+            $template->save($pdfPath, 'PDF');
 
             return response()->download($pdfPath, 'file.' . $type)->deleteFileAfterSend(true);
         }
