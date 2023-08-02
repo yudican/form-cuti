@@ -33,7 +33,12 @@
                         <x-text-field type="text" name="username" label="NRP" readonly /> --}}
                         {{--
                         <x-text-field type="text" name="pangkat" label="Pangkat" readonly /> --}}
-                        <x-text-field type="text" name="pengikut" label="Pengikut" />
+                        <x-select name="jenis" label="Jenis Pengajuan" class="form-control">
+                            <option value="">Jenis Pengajuan</option>
+                            <option value="CUTI">CUTI</option>
+                            <option value="IZIN">IZIN</option>
+                        </x-select>
+                        <x-textarea type="text" name="pengikut" label="Pengikut" />
                         <x-text-field type="date" name="tanggal_berangkat" label="Tanggal Berangkat" />
                     </div>
                     <div class="col-md-6">
@@ -42,11 +47,13 @@
                         <x-text-field type="text" name="transportasi" label="Transportasi" />
                     </div>
 
+                    @if ($jenis == 'CUTI')
                     <div class="col-md-12">
                         <x-text-field type="text" name="keperluan" label="Keperluan" />
                         <x-input-file file="{{$file_jasmani}}" path="{{optional($file_jasmani_path)->getClientOriginalName()}}" name="file_jasmani_path" label="File Jasmani" />
                         <x-input-file file="{{$file_kesehatan}}" path="{{optional($file_kesehatan_path)->getClientOriginalName()}}" name="file_kesehatan_path" label="File Kesehatan" />
                     </div>
+                    @endif
 
 
 
@@ -128,14 +135,20 @@
                                 Keperluan
                                 <span>{{$keperluan ?? '-'}}</span>
                             </li>
+
+                            @if ($jenis == 'CUTI')
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 File Jasmani
                                 <a href={{$file_jasmani}} target="_blank">Lihat File</a>
                             </li>
+                            @endif
+                            @if ($jenis == 'CUTI')
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 File Kesehatan
                                 <a href={{$file_kesehatan}} target="_blank">Lihat File</a>
                             </li>
+                            @endif
+
                             @if ($status == 'diusulkan')
                             @if (in_array(auth()->user()->role->role_type,['admin','superadmin']))
                             <li class="list-group-item">

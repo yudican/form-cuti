@@ -4,6 +4,8 @@ namespace App\Http\Livewire\Table;
 
 use App\Models\HideableColumn;
 use App\Models\DataFormPengajuan;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Storage;
 use Mediconesystems\LivewireDatatables\BooleanColumn;
 use Mediconesystems\LivewireDatatables\Column;
 use Yudican\LaravelCrudGenerator\Livewire\Table\LivewireDatatable;
@@ -76,11 +78,6 @@ class DataFormPengajuanTable extends LivewireDatatable
                     ];
                     $action[] = [
                         'type' => 'button',
-                        'route' => "download($id,'docx')",
-                        'label' => 'Download Word',
-                    ];
-                    $action[] = [
-                        'type' => 'button',
                         'route' => "download($id,'pdf')",
                         'label' => 'Download PDF',
                     ];
@@ -131,39 +128,76 @@ class DataFormPengajuanTable extends LivewireDatatable
         $template = new TemplateProcessor(public_path('assets/sij.docx'));
         // Replace variables in the template with the values passed in
 
-        $template->setValue('sij_nomor', 'SIJ/   /VI/2023');
+        $template->setValue('sij_nomor', 'SIJ/' . date('m') . '/' . date('Y'));
         $template->setValue('nama', $form->user_name);
-        $template->setValue('pangkat', $form->pangkat . '/' . $form?->user?->username);
+        $template->setValue('pangkat', $form->pangkat);
         $template->setValue('asal', 'Sorong');
         $template->setValue('tujuan', $form->tujuan);
         $template->setValue('keperluan', $form->keperluan ?? '-');
         $template->setValue('tgl_berangkat', date('d M Y', strtotime($form->tanggal_berangkat)));
         $template->setValue('tgl_kembali', date('d M Y', strtotime($form->tanggal_kembali)));
-        $template->setValue('tgl_disetujui', date('d M Y', strtotime($form->tanggal_disetujui)));
+        $template->setValue('tgl_disetujui', date(',.... M Y', strtotime($form->tanggal_disetujui)));
         $template->setValue('pengikut', $form->pengikut ?? '-');
         $template->setValue('transportasi', $form->transportasi ?? '-');
 
         // add days 1
-        $tanggal_apel = date('l, d M Y', strtotime($form->tanggal_kembali . ' +1 day'));
-        $template->setValue('keterangan', "- Tiba ditempat segera laporan TNI Setempat\n - {$tanggal_apel} Sudah apel api di Koarmada III");
+        $tanggal_apel = date('d M Y', strtotime($form->tanggal_kembali . ' +1 day'));
+        $template->setValue('keterangan', "- {$tanggal_apel} Sudah apel api di Mako Koarmada III \n Tiba ditempat segera laporan TNI Setempat");
 
         // Save the modified template to a temporary file
         $tempFile = tempnam(sys_get_temp_dir(), 'word_template');
         $template->saveAs($tempFile);
 
         if ($type == 'pdf') {
-            Settings::setPdfRendererName(Settings::PDF_RENDERER_DOMPDF);
-            Settings::setPdfRendererPath(base_path('vendor/dompdf/dompdf'));
+            // Settings::setPdfRendererName(Settings::PDF_RENDERER_DOMPDF);
+            // Settings::setPdfRendererPath(base_path('vendor/dompdf/dompdf'));
 
-            // Convert the temporary file to PDF
-            $phpWord = IOFactory::load($tempFile);
-            $pdfWriter = IOFactory::createWriter($phpWord, 'PDF');
-            $pdfFile = tempnam(sys_get_temp_dir(), 'pdf');
-            $pdfWriter->save($pdfFile);
+            // // Convert the temporary file to PDF
+            // $phpWord = IOFactory::load($tempFile);
+            // $pdfWriter = IOFactory::createWriter($phpWord, 'PDF');
+            // $pdfFile = tempnam(sys_get_temp_dir(), 'pdf');
+            // $pdfWriter->save($pdfFile);
+            $client = new Client();
+
+            $instructions = '{
+                "parts": [
+                    {
+                    "file": "document"
+                    }
+                ]
+            }';
+
+            $response = $client->post('https://api.pspdfkit.com/build', [
+                'headers' => [
+                    'Authorization' => 'Bearer pdf_live_2nxm8Se1xwfHEl5xgoyrlxmWUi8scT4KMbmyARMWENE',
+                ],
+                'multipart' => [
+                    [
+                        'name' => 'instructions',
+                        'contents' => $instructions,
+                    ],
+                    [
+                        'name' => 'document',
+                        'contents' => fopen($tempFile, 'r'),
+                    ],
+                ],
+            ]);
+
+            // If the request was successful, download the response content to a file
+            if ($response->getStatusCode() === 200) {
+                $pdfContent = $response->getBody();
+
+                // Save the PDF file
+                $pdfFilePath = str_replace('/', '-', $form->pangkat) . '.pdf';
+                Storage::disk('public')->put($pdfFilePath, $pdfContent);
+                return Storage::disk('public')->download($pdfFilePath);
+            } else {
+                return response()->json(['message' => 'File conversion failed.'], 500);
+            }
 
             // $phpWord->save($pdfFile, 'PDF');
 
-            return response()->download($pdfFile, 'file.' . $type)->deleteFileAfterSend(true);
+
         }
 
         // Send the PDF file to the browser for download

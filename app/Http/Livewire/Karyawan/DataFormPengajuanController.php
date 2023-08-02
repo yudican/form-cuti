@@ -16,6 +16,7 @@ class DataFormPengajuanController extends Component
     public $file_kesehatan;
     public $keterangan;
     public $status;
+    public $jenis;
     public $tanggal_berangkat;
     public $tanggal_kembali;
     public $tujuan;
@@ -63,7 +64,7 @@ class DataFormPengajuanController extends Component
         $tanggal_berangkat = date('Y-m-d', strtotime($this->tanggal_berangkat));
         $tanggal_kembali = date('Y-m-d', strtotime($this->tanggal_kembali));
         if ($tanggal_berangkat > $tanggal_kembali) {
-            return $this->emit('showAlert', ['msg' => 'Tanggal Berangkat tidak boleh lebih besar dari tanggal kembali']);
+            return $this->emit('showAlertError', ['msg' => 'Tanggal Berangkat tidak boleh lebih besar dari tanggal kembali']);
         }
         $data = [
             'nomor_sij' => $this->generateSijNumber(),
@@ -71,7 +72,7 @@ class DataFormPengajuanController extends Component
             'pengikut'  => $this->pengikut,
             'transportasi'  => $this->transportasi,
             'keterangan'  => $this->keterangan,
-            'status'  => $this->status,
+            'jenis'  => $this->jenis,
             'tanggal_berangkat'  => $this->tanggal_berangkat,
             'tanggal_kembali'  => $this->tanggal_kembali,
             'tujuan'  => $this->tujuan,
@@ -105,6 +106,7 @@ class DataFormPengajuanController extends Component
             'transportasi'  => $this->transportasi,
             'keterangan'  => $this->keterangan,
             'status'  => $this->status,
+            'jenis'  => $this->jenis,
             'tanggal_berangkat'  => $this->tanggal_berangkat,
             'tanggal_kembali'  => $this->tanggal_kembali,
             'tujuan'  => $this->tujuan,
@@ -149,6 +151,7 @@ class DataFormPengajuanController extends Component
             'tanggal_berangkat'  => 'required',
             'tanggal_kembali'  => 'required',
             'tujuan'  => 'required',
+            'jenis'  => 'required',
         ];
 
         return $this->validate($rule);
@@ -169,6 +172,7 @@ class DataFormPengajuanController extends Component
         $this->pengikut = $row->pengikut;
         $this->transportasi = $row->transportasi;
         $this->status = $row->status;
+        $this->jenis = $row->jenis;
         $this->tanggal_berangkat = date('Y-m-d', strtotime($row->tanggal_berangkat));
         $this->tanggal_kembali = date('Y-m-d', strtotime($row->tanggal_kembali));
         $this->tujuan = $row->tujuan;
@@ -198,6 +202,7 @@ class DataFormPengajuanController extends Component
         $this->pengikut = $row->pengikut;
         $this->transportasi = $row->transportasi;
         $this->status = $row->status;
+        $this->jenis = $row->jenis;
         $this->tanggal_berangkat = date('d M Y', strtotime($row->tanggal_berangkat));
         $this->tanggal_kembali = date('d M Y', strtotime($row->tanggal_kembali));
         $this->tujuan = $row->tujuan;
@@ -231,6 +236,7 @@ class DataFormPengajuanController extends Component
         $this->file_kesehatan = null;
         $this->keterangan = null;
         $this->status = null;
+        $this->jenis = null;
         $this->tanggal_berangkat = null;
         $this->tanggal_kembali = null;
         $this->nomor_sij = null;

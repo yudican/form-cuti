@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <title>{{ config('app.name', 'Laravel') }}</title>
+  <title>KASATMINPERS</title>
 
   <!-- Fonts -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
@@ -29,7 +29,8 @@
   <link rel="stylesheet" href="{{asset('assets/css/atlantis2.css')}}">
 
   <!-- Styles -->
-  {{-- <link rel="stylesheet" href="{{ mix('css/app.css') }}"> --}}
+  {{--
+  <link rel="stylesheet" href="{{ mix('css/app.css') }}"> --}}
   @stack('styles')
   @livewireStyles
   <style>
@@ -115,12 +116,10 @@
                   </a>
                   <ul class="dropdown-menu dropdown-user animated fadeIn">
                     <div class="scroll-wrapper dropdown-user-scroll scrollbar-outer" style="position: relative;">
-                      <div class="dropdown-user-scroll scrollbar-outer scroll-content"
-                        style="height: auto; margin-bottom: 0px; margin-right: 0px; max-height: 0px;">
+                      <div class="dropdown-user-scroll scrollbar-outer scroll-content" style="height: auto; margin-bottom: 0px; margin-right: 0px; max-height: 0px;">
                         <li>
                           <div class="user-box">
-                            <div class="avatar-lg"><img src="{{ Auth::user()->profile_photo_url }}" alt="image profile"
-                                class="avatar-img rounded"></div>
+                            <div class="avatar-lg"><img src="{{ Auth::user()->profile_photo_url }}" alt="image profile" class="avatar-img rounded"></div>
                             <div class="u-text">
                               <h4>{{ Auth::user()->name }}</h4>
                               <p class="text-muted">{{ Auth::user()->email }}</p>
@@ -154,10 +153,8 @@
                 </li>
                 @else
                 <li class="nav-item ">
-                  <a class="nav-link" id="notifDropdown" title="Login" href="#subscription"
-                    style="text-decoration: none;">
-                    <button class=" btn btn-default btn-sm px-4 border-r-2"
-                      style="text-decoration: none;">Berlangganan</button>
+                  <a class="nav-link" id="notifDropdown" title="Login" href="#subscription" style="text-decoration: none;">
+                    <button class=" btn btn-default btn-sm px-4 border-r-2" style="text-decoration: none;">Berlangganan</button>
                   </a>
                 </li>
                 <li class="nav-item ">
@@ -180,8 +177,7 @@
     <footer class="footer">
       <div class="container">
         <div class="copyright ml-auto">
-          {{date('Y')}}, made with <i class="fa fa-heart heart text-danger"></i> by <a
-            href="http://www.themekita.com">ThemeKita</a>
+          {{date('Y')}}, made with <i class="fa fa-heart heart text-danger"></i> by <a href="http://www.themekita.com">ThemeKita</a>
         </div>
       </div>
     </footer>

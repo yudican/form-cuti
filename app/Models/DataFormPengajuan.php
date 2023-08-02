@@ -13,7 +13,7 @@ class DataFormPengajuan extends Model
     protected $table = 'data_form_pengajuan';
     //public $incrementing = false;
 
-    protected $fillable = ['nomor_sij', 'file_jasmani', 'file_kesehatan', 'keterangan', 'status', 'tanggal_berangkat', 'tanggal_kembali', 'tanggal_disetujui', 'tujuan', 'keperluan', 'transportasi', 'pengikut', 'user_id'];
+    protected $fillable = ['nomor_sij', 'file_jasmani', 'file_kesehatan', 'keterangan', 'status', 'jenis', 'tanggal_berangkat', 'tanggal_kembali', 'tanggal_disetujui', 'tujuan', 'keperluan', 'transportasi', 'pengikut', 'user_id'];
 
     protected $dates = ['tanggal_berangkat', 'tanggal_kembali', 'tanggal_disetujui'];
 
@@ -39,7 +39,7 @@ class DataFormPengajuan extends Model
     {
         $data_karyawan = DataKaryawan::where('user_id', $this->user_id)->first();
         if ($data_karyawan) {
-            return $data_karyawan->pangkat . '/' . $data_karyawan->satker . '/' . $data_karyawan->user->user_name;
+            return $data_karyawan->pangkat . '/' . $data_karyawan->satker;
         }
         return '-';
     }
